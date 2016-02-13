@@ -1,0 +1,9 @@
+<ion-view view-title="Coupons">
+  <ion-content>
+    <ion-list>
+      <ion-item ng-repeat="coupon in coupons" href="#/app/coupons/{{coupon.id}}">
+        {{coupon.title}}
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

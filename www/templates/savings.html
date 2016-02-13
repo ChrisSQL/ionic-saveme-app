@@ -1,0 +1,72 @@
+<ion-view view-title="Savings">
+  <ion-content>
+
+    <ion-refresher
+      pulling-text="Pull to refresh"
+      on-refresh="refresh()"
+      refreshing-text="Refreshing!">
+    </ion-refresher>
+
+    <ion-list>
+      <ion-item ng-repeat="saving in savings track by $index |orderBy:'votesreal'">
+
+
+        <div class="row group-item">
+
+
+          <div class="col col-75 title-70">
+
+            <div class="row"><h3 class="title-top votes">{{saving.votes}}</h3></div>
+            <div class="row"><h2 class="title-text">{{saving.title}} <b>€{{saving.price}}</b> @ ({{saving.retailer}})
+            </h2></div>
+
+
+          </div>
+          <div class="col col-25 image-30">
+
+            <div class="row saving-image-row"><img class="list-image"
+                                                   ng-src="{{productImage(saving)}}">
+            </div>
+
+
+            <div class="row">
+              <div class="col save-button">
+                <a class=" text-center" href="#/app/savings/{{saving.id}}">
+                  <button class="save-button">SAVE</button>
+                </a>
+              </div>
+
+              <!--</a>-->
+            </div>
+
+
+          </div>
+
+
+        </div>
+        <div class="row bottom-row">
+          <img ng-src="{{saving.user.profileImageURL}}"
+               class="small-profile-image-thumbnail"
+               alt="{{saving.user.username}}" height="20px"
+               width="20px"/><span class="username"
+                                   data-ng-bind="saving.user.username"></span><span class="username-date">{{saving.created | date : format}}</span>
+
+
+        </div>
+
+
+      </ion-item>
+      <ion-infinite-scroll
+
+
+        ng-if="moreDataCanBeLoaded()"
+        on-infinite="addSavings()"
+        distance="10%">
+
+
+      </ion-infinite-scroll>
+    </ion-list>
+
+
+  </ion-content>
+</ion-view>

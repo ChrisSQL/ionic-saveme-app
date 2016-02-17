@@ -4,9 +4,10 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('saveme', ['ionic', 'starter.controllers'])
+angular.module('saveme', ['ngCookies', 'ionic', 'starter.controllers', 'firebase'])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $rootScope, $cookieStore, $state) {
+
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -20,6 +21,8 @@ angular.module('saveme', ['ionic', 'starter.controllers'])
       StatusBar.styleDefault();
     }
   });
+
+
 })
 
 .config(function($stateProvider, $urlRouterProvider) {
@@ -32,7 +35,18 @@ angular.module('saveme', ['ionic', 'starter.controllers'])
     controller: 'AppCtrl'
   })
 
-  .state('app.single1', {
+    .state('app.login', {
+      url: '/login',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/login.html',
+          controller: 'LoginCtrl'
+        }
+
+      }
+    })
+
+  .state('app.coupon', {
       url: '/coupons/:couponId',
       views: {
         'menuContent': {
@@ -55,11 +69,12 @@ angular.module('saveme', ['ionic', 'starter.controllers'])
       views: {
         'menuContent': {
           templateUrl: 'templates/savings.html',
-          controller: 'SavingCtrl'
+          controller: 'SavingsCtrl'
         }
+
       }
     })
-  .state('app.single', {
+  .state('app.saving', {
     url: '/savings/:savingId',
     views: {
       'menuContent': {
@@ -68,6 +83,10 @@ angular.module('saveme', ['ionic', 'starter.controllers'])
       }
     }
   });
+
+
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/savings');
 });
+
+

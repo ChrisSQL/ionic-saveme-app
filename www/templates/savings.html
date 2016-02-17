@@ -1,5 +1,8 @@
-<ion-view view-title="Savings">
-  <ion-content>
+<ion-view>
+
+
+
+  <ion-content ng-cloak>
 
     <ion-refresher
       pulling-text="Pull to refresh"
@@ -7,37 +10,40 @@
       refreshing-text="Refreshing!">
     </ion-refresher>
 
-    <ion-list>
-      <ion-item ng-repeat="saving in savings track by $index |orderBy:'votesreal'">
+    <ion-list >
+      <ion-item href="#/app/savings/{{saving._id}}" ng-repeat="saving in savings track by $index |orderBy:'votesreal'" class="savings-list">
 
 
         <div class="row group-item">
 
+          <div class="col-75 title-70">
 
-          <div class="col col-75 title-70">
-
-            <div class="row"><h3 class="title-top votes">{{saving.votes}}</h3></div>
+            <div class="row"><h3 class="title-top votes">{{saving.votes}} </h3></div>
             <div class="row"><h2 class="title-text">{{saving.title}} <b>€{{saving.price}}</b> @ ({{saving.retailer}})
             </h2></div>
 
 
           </div>
-          <div class="col col-25 image-30">
+          <div class="col-25 image-30">
 
-            <div class="row saving-image-row"><img class="list-image"
-                                                   ng-src="{{productImage(saving)}}">
+            <div class="saving-image-box">
+              <img class="list-image thumbnail" ng-src="{{productImage(saving)}}">
             </div>
 
 
-            <div class="row">
-              <div class="col save-button">
-                <a class=" text-center" href="#/app/savings/{{saving.id}}">
-                  <button class="save-button">SAVE</button>
-                </a>
+            <!--<div class="row">-->
+              <!--&lt;!&ndash;<div class="col save-button">&ndash;&gt;-->
+                <!--&lt;!&ndash;<a class=" text-center" href="#/app/savings/{{saving._id}}">&ndash;&gt;-->
+                  <!--&lt;!&ndash;<button class="save-button">SAVE</button>&ndash;&gt;-->
+                <!--&lt;!&ndash;</a>&ndash;&gt;-->
+              <!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+              <div class="save-button-area text-center">
+                <button class='button button-positive small-button-home'>SAVE</button>
               </div>
 
-              <!--</a>-->
-            </div>
+              <!--&lt;!&ndash;</a>&ndash;&gt;-->
+            <!--</div>-->
 
 
           </div>
@@ -45,26 +51,23 @@
 
         </div>
         <div class="row bottom-row">
+
+
+
           <img ng-src="{{saving.user.profileImageURL}}"
                class="small-profile-image-thumbnail"
-               alt="{{saving.user.username}}" height="20px"
-               width="20px"/><span class="username"
-                                   data-ng-bind="saving.user.username"></span><span class="username-date">{{saving.created | date : format}}</span>
+               alt="{{saving.user.username}}"/>
+
+          <div class="username" data-ng-bind="saving.user.username"></div>
+          <div class="username-date">{{saving.created | date : format}}</div>
+
 
 
         </div>
 
 
       </ion-item>
-      <ion-infinite-scroll
 
-
-        ng-if="moreDataCanBeLoaded()"
-        on-infinite="addSavings()"
-        distance="10%">
-
-
-      </ion-infinite-scroll>
     </ion-list>
 
 

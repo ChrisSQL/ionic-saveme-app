@@ -1,5 +1,133 @@
-<ion-view view-title="Saving">
+<ion-view view-title="">
   <ion-content>
-    <h1>Savings</h1>
+
+    <div class="outer-container-saving">
+
+    <div class="list card">
+
+      <div class="row top-row">
+        <img ng-src="{{saving.user.profileImageURL}}" class="small-profile-image-thumbnail-top" alt="{{saving.user.username}}"/>
+        <div class="username-top" data-ng-bind="saving.user.username"></div>
+        <div class="username-date-top">{{saving.created | date : format}}</div>
+      </div>
+
+      <div class="item item-body">
+        <img class="full-image" ng-src="{{productImage(saving)}}">
+
+        <!--<div class="product-view-title"> {{saving.title}} <div class="saving-price"> €{{saving.price}}</div> @ ({{saving.retailer}})-->
+        <!--</div>-->
+
+        <div class="saving-title-text" ng-cloak>{{saving.title}} <span class="saving-price">{{priceFormatted}}</span> {{retailerFormatted}}</div>
+
+        <text-angular ta-toolbar="[[]]" ng-bind-html="saving.details"></text-angular>
+
+
+
+        <!--<p>-->
+          <!--<a href="#" class="subdued">1 Like</a>-->
+          <!--<a href="#" class="subdued">5 Comments</a>-->
+        <!--</p>-->
+      </div>
+
+      <!--<div class="row item">-->
+        <!--<div class="col text-center">-->
+          <!--<button class='button button-positive small-button-cold'>COLD</button>-->
+        <!--</div>-->
+        <!--<div class="col text-center">-->
+          <!--<button class='button button-positive small-button-hot'>HOT</button>-->
+        <!--</div>-->
+      <!--</div>-->
+      <div class="row item" ng-cloak>
+        <div class="col text-center"><div class="saving-price-saving"> €{{saving.price}}</div></div>
+
+        <div class="col text-center">
+          <!--<button class='button button-positive small-button-save'>SAVE</button>-->
+          <!--<button class="button button-icon icon " href="http://www.google.ie">-->
+            <!--Save-->
+          <!--</button>-->
+          <a href="{{saving.link}}" onclick="window.open(this.href, '_system', 'location=yes'); return false;">
+            <button class='button button-positive small-button-save'>SAVE</button>
+          </a>
+        </div>
+
+
+      </div>
+
+      <div class="comments-saving">
+
+        <h4>Comments</h4>
+
+        <!--<div class=" row comments-section" >-->
+          <!--<div class="col-20">-->
+
+            <!--<img ng-src="{{saving.user.profileImageURL}}" class="small-profile-image-thumbnail-comment-first" alt="{{saving.user.username}}"/>-->
+
+          <!--</div>-->
+
+          <!--<div class="col-80 comment-80">-->
+
+            <!--<form ng-submit="">-->
+              <!--<button ng-if="details.length > 0" type="submit" class='button button-positive small-button-post-comment-saving'>POST</button>-->
+                  <!--<input class="post-comment-button" placeholder="Post public comment..." type="text" ng-model="details">-->
+
+            <!--</form>-->
+
+          <!--</div>-->
+
+        <!--</div>-->
+
+        <div ng-repeat="post in posts | filter:{ savingId: saving._id}|orderBy : 'created'" >
+
+
+          <div class="row single-comment-saving">
+
+            <div class="col-20 avatar-column-comments-saving">
+
+              <div class="comment-details-saving">
+
+                <img ng-src="{{post.user.profileImageURL}}" class="small-profile-image-thumbnail-comment" alt="{{post.user.username}}"/>
+
+              </div>
+
+            </div>
+
+            <div class="col-80">
+
+              <div class="comment-details-saving-top">
+
+                <span class="username-comment">{{post.user.username}}</span> <span class="date-comment">{{post.created | date : format}}</span>
+
+              </div>
+
+              <div class="comment-details-saving">
+
+                <text-angular ta-toolbar="[[]]" ng-bind-html="post.details"></text-angular>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!--<div class="row comment-bottom-row">-->
+
+            <!--<img ng-src="{{post.user.profileImageURL}}" class="small-profile-image-thumbnail" alt="{{post.user.username}}" height="20px" width="20px"/>-->
+            <!--<span class="username-comment">{{post.user.username}}</span>-->
+            <!--<span class="date-comment">{{post.created | date : format}}</span>-->
+
+          <!--</div>-->
+
+
+        </div>
+
+
+
+      </div>
+
+
+    </div>
+    </div>
+
   </ion-content>
 </ion-view>

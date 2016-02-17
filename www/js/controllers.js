@@ -1,160 +1,299 @@
-angular.module('starter.controllers', ['angularMoment'])
+angular.module('starter.controllers', ['textAngular'])
 
-.controller('AppCtrl', function($http, $scope, $ionicModal, $timeout) {
+  .controller('AppCtrl', function ($http, $scope, $ionicModal, $timeout, $stateParams, $state, $cookieStore, $window ) {
 
-  // With the new view caching in Ionic, Controllers are only called
-  // when they are recreated or on app start, instead of every page change.
-  // To listen for when this page is active (for example, to refresh data),
-  // listen for the $ionicView.enter event:
-  //$scope.$on('$ionicView.enter', function(e) {
-  //});
+    // Logout user
+    $scope.logout = function () {
+      $cookieStore.remove("userInfo");
+      $state.go('app.savings');
+      $window.location.reload();
+    };
 
-  $http.get('http://www.saveme.ie/api/savings').success(function (data) {
-    $scope.savings = data;
+    $scope.user = $cookieStore.get('userInfo');
 
-  });
+    // Form data for the login modal
+    $scope.loginData = {};
 
-  $scope.productImage = function(saving){
+    // Create the login modal that we will use later
+    $ionicModal.fromTemplateUrl('templates/login.html', {
+      scope: $scope
+    }).then(function (modal) {
+      $scope.modal = modal;
+    });
 
-    var savingURL = saving.urlimage.charAt(0);
-    console.log(savingURL);
+    // Triggered in the login modal to close it
+    $scope.closeLogin = function () {
+      $scope.modal.hide();
+    };
 
-    if(savingURL === '.'){
+    // Open the login modal
+    $scope.login = function () {
+      $scope.modal.show();
+    };
 
-      while(saving.urlimage.charAt(0) === '0')
-        saving.urlimage = saving.urlimage.substr(1);
+    // Perform the login action when the user submits the login form
+    $scope.doLogin = function () {
+      console.log('Doing login', $scope.loginData);
 
-      console.log('http://www.saveme.ie/'+ saving.urlimage);
-
-      return 'http://www.saveme.ie/'+ saving.urlimage;
-
-
-    }else{
-
-      return saving.urlimage;
-
-    }
+      // Simulate a login delay. Remove this and replace with your login
+      // code if using a login system
+      $timeout(function () {
+        $scope.closeLogin();
+      }, 1000);
+    };
 
 
-  };
+    /**
+     * SOCIAL LOGIN
+     * Facebook and Google
+     */
+      // FB Login
+    $scope.fbLogin = function () {
+      FB.login(function (response) {
+        if (response.authResponse) {
+          getUserInfo();
+        } else {
+          console.log('User cancelled login or did not fully authorize.');
+        }
+      }, {scope: 'email,user_photos,user_videos'});
 
-  var currentStart = 0;
+      function getUserInfo() {
+        // get basic info
+        FB.api('/me', function (response) {
+          console.log('Facebook Login RESPONSE: ' + angular.toJson(response));
+          // get profile picture
+          FB.api('/me/picture?type=normal', function (picResponse) {
+            console.log('Facebook Login RESPONSE: ' + picResponse.data.url);
+            response.imageUrl = picResponse.data.url;
+            // store data to DB - Call to API
+            // Todo
+            // After posting user data to server successfully store user data locally
+            var user = {};
+            user.name = response.name;
+            user.email = response.email;
+            if(response.gender) {
+              response.gender.toString().toLowerCase() === 'male' ? user.gender = 'M' : user.gender = 'F';
+            } else {
+              user.gender = '';
+            }
+            user.profilePic = picResponse.data.url;
+            $cookieStore.put('userInfo', user);
+            $scope.modal.hide();
+            $window.location.reload();
+          });
+        });
+      }
+    };
+    // END FB Login
 
-  $scope.addSavings = function() {
-    for (var i = currentStart; i < currentStart+5; i++) {
-      $scope.savings.push({ title: $scope.savings[i].title, id: [i] })
-    }
+    // Google Plus Login
+    $scope.gplusLogin = function () {
 
-    if ( $scope.savings.length == currentStart ) {
-      $scope.moreDataCanBeLoaded = true;
-    }
+      alert("Google 1");
 
-    currentStart += 2;
-    $scope.$broadcast('scroll.infiniteScrollComplete')
-  };
+      var myParams = {
 
-  $scope.refresh = function() {
+        // Replace client id with yours
+        'clientid': '408070110880-1og8p3pjr817b2aua2nphv849kjecv5i.apps.googleusercontent.com',
+        'cookiepolicy': 'single_host_origin',
+        'callback': loginCallback,
+        'approvalprompt': 'force',
+        'scope': 'https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/plus.profile.emails.read'
+
+      };
+
+      gapi.auth.signIn(myParams);
+
+      function loginCallback(result) {
+
+        console.log("Google 2");
+
+        if (result['status']['signed_in']) {
+          var request = gapi.client.plus.people.get({'userId': 'me'});
+          request.execute(function (resp) {
+            console.log('Google+ Login RESPONSE: ' + angular.toJson(resp));
+            var userEmail;
+            if (resp['emails']) {
+              for (var i = 0; i < resp['emails'].length; i++) {
+                if (resp['emails'][i]['type'] == 'account') {
+                  userEmail = resp['emails'][i]['value'];
+                }
+              }
+            }
+            // store data to DB
+            var user = {};
+            user.name = resp.displayName;
+            user.email = userEmail;
+            if (resp.gender) {
+              resp.gender.toString().toLowerCase() === 'male' ? user.gender = 'M' : user.gender = 'F';
+            } else {
+              user.gender = '';
+            }
+            user.profilePic = resp.image.url;
+            $cookieStore.put('userInfo', user);
+            $scope.modal.hide();
+            $window.location.reload();
+          });
+        }
+      }
+    };
+    // END Google Plus Login
+
+
+
+  })
+
+  .controller('SavingsCtrl', function ($http, $scope, $window, $timeout, $cookieStore) {
+
+    $scope.user = $cookieStore.get('userInfo');
+    console.log($scope.user);
+
+    $scope.openSaving = function (saving) {
+
+      $window.open(saving.link);
+
+
+    };
 
     $http.get('http://www.saveme.ie/api/savings').success(function (data) {
       $scope.savings = data;
 
     });
 
-    $timeout( function() {
+    $scope.refresh = function () {
 
-      //Stop the ion-refresher from spinning
-      $scope.$broadcast('scroll.refreshComplete');
+      $http.get('http://www.saveme.ie/api/savings').success(function (data) {
+        $scope.savings = data;
 
-    }, 1000);
-  };
+      });
 
-  // Form data for the login modal
-  $scope.loginData = {};
+      $timeout(function () {
 
-  // Create the login modal that we will use later
-  $ionicModal.fromTemplateUrl('templates/login.html', {
-    scope: $scope
-  }).then(function(modal) {
-    $scope.modal = modal;
-  });
+        //Stop the ion-refresher from spinning
+        $scope.$broadcast('scroll.refreshComplete');
 
-  // Triggered in the login modal to close it
-  $scope.closeLogin = function() {
-    $scope.modal.hide();
-  };
+      }, 1000);
+    };
 
-  // Open the login modal
-  $scope.login = function() {
-    $scope.modal.show();
-  };
+    $scope.productImage = function (saving) {
 
-  // Perform the login action when the user submits the login form
-  $scope.doLogin = function() {
-    console.log('Doing login', $scope.loginData);
+      var savingURL = saving.urlimage.charAt(0);
+      // console.log(savingURL);
 
-    // Simulate a login delay. Remove this and replace with your login
-    // code if using a login system
-    $timeout(function() {
-      $scope.closeLogin();
-    }, 1000);
-  };
-})
+      if (savingURL === '.') {
 
-.controller('SavingsCtrl', function($http, $scope, $window) {
+        while (saving.urlimage.charAt(0) === '0')
+          saving.urlimage = saving.urlimage.substr(1);
+
+        // console.log('http://www.saveme.ie/'+ saving.urlimage);
+
+        return 'http://www.saveme.ie/' + saving.urlimage;
 
 
+      } else {
 
-  $scope.moreDataCanBeLoaded = false;
+        return saving.urlimage;
 
-  $scope.openSaving = function(saving){
-
-    $window.open(saving.link);
-
-
-  };
-
-  $http.get('http://www.saveme.ie/api/savings').success(function (data) {
-    $scope.savings = data;
-
-  });
-
-  var currentStart = 0;
-
-  $scope.addSavings = function() {
-    for (var i = currentStart; i < currentStart+5; i++) {
-      $scope.savings.push({ title: $scope.savings[i].title, id: [i] })
-    }
-
-    if ( $scope.savings.length == currentStart ) {
-      $scope.moreDataCanBeLoaded = true;
-    }
-
-    currentStart += 2;
-    $scope.$broadcast('scroll.infiniteScrollComplete')
-  };
+      }
 
 
-
-  $scope.addSavings();
+    };
 
 
 
 
-})
-
-  .controller('SavingCtrl', function($scope, $stateParams) {
   })
 
-  .controller('CouponsCtrl', function($scope) {
+  .controller('SavingCtrl', function ($stateParams, $scope, $http, $cookieStore) {
+
+    $scope.user = $cookieStore.get('userInfo');
+
+    $scope.productImage = function (saving) {
+
+      var savingURL = saving.urlimage.charAt(0);
+      // console.log(savingURL);
+
+      if (savingURL === '.') {
+
+        while (saving.urlimage.charAt(0) === '0')
+          saving.urlimage = saving.urlimage.substr(1);
+
+        // console.log('http://www.saveme.ie/'+ saving.urlimage);
+
+        return 'http://www.saveme.ie/' + saving.urlimage;
+
+
+      } else {
+
+        return saving.urlimage;
+
+      }
+
+
+    };
+
+    $scope.id = $stateParams.savingId;
+
+    $http.get('http://www.saveme.ie/api/savings/' + $scope.id).success(function (data) {
+      $scope.saving = data;
+      $scope.priceFormatted = '€' + $scope.saving.price;
+      $scope.retailerFormatted = '@ (' + $scope.saving.retailer + ')';
+
+    });
+
+    $http.get('http://www.saveme.ie/posts').success(function (data) {
+      $scope.posts = data;
+
+    });
+
+
+    $scope.productImageSaving = function (saving) {
+
+      console.log(saving);
+
+      var savingURL = $scope.saving.urlimage.charAt(0);
+      // console.log(savingURL);
+
+      if (savingURL === '.') {
+
+        while ($scope.saving.urlimage.charAt(0) === '0')
+          $scope.saving.urlimage = $scope.saving.urlimage.substr(1);
+
+        // console.log('http://www.saveme.ie/'+ saving.urlimage);
+
+        return 'http://www.saveme.ie/' + $scope.saving.urlimage;
+
+
+      } else {
+
+        return $scope.saving.urlimage;
+
+      }
+
+
+    };
+
+  })
+
+  .controller('CouponsCtrl', function ($scope) {
     $scope.coupons = [
-      { title: 'Reggae1', id: 1 },
-      { title: 'Chill2', id: 2 },
-      { title: 'Dubstep3', id: 3 },
-      { title: 'Indie4', id: 4 },
-      { title: 'Rap5', id: 5 },
-      { title: 'Cowbell6', id: 6 }
+      {title: 'Reggae1', id: 1},
+      {title: 'Chill2', id: 2},
+      {title: 'Dubstep3', id: 3},
+      {title: 'Indie4', id: 4},
+      {title: 'Rap5', id: 5},
+      {title: 'Cowbell6', id: 6}
     ];
   })
 
-.controller('CouponCtrl', function($scope, $stateParams) {
-});
+  .controller('CouponCtrl', function ($scope, $stateParams) {
+  })
+
+  .controller('LoginCtrl', function ($scope, $state, $cookieStore, $http) {
+
+
+
+
+
+  });
+

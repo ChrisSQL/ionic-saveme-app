@@ -1,7 +1,7 @@
 {
   "name": "saveme",
   "version": "1.1.1",
-  "description": "saveme: An Ionic project",
+  "description": "The Irish Money Savings Site",
   "dependencies": {
     "gulp": "^3.5.6",
     "gulp-sass": "^2.0.4",

@@ -1,6 +1,6 @@
 angular.module('starter.controllers', ['textAngular'])
 
-  .controller('AppCtrl', function ($http, $scope, $ionicModal, $timeout, $stateParams, $state, $cookieStore, $window ) {
+  .controller('AppCtrl', function ($http, $scope, $ionicModal, $timeout, $stateParams, $state, $cookieStore, $window) {
 
     // Logout user
     $scope.logout = function () {
@@ -71,7 +71,8 @@ angular.module('starter.controllers', ['textAngular'])
             var user = {};
             user.name = response.name;
             user.email = response.email;
-            if(response.gender) {
+            user.provider = 'facebook';
+            if (response.gender) {
               response.gender.toString().toLowerCase() === 'male' ? user.gender = 'M' : user.gender = 'F';
             } else {
               user.gender = '';
@@ -86,62 +87,10 @@ angular.module('starter.controllers', ['textAngular'])
     };
     // END FB Login
 
-    // Google Plus Login
-    $scope.gplusLogin = function () {
-
-      alert("Google 1");
-
-      var myParams = {
-
-        // Replace client id with yours
-        'clientid': '408070110880-1og8p3pjr817b2aua2nphv849kjecv5i.apps.googleusercontent.com',
-        'cookiepolicy': 'single_host_origin',
-        'callback': loginCallback,
-        'approvalprompt': 'force',
-        'scope': 'https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/plus.profile.emails.read'
-
-      };
-
-      gapi.auth.signIn(myParams);
-
-      function loginCallback(result) {
-
-        console.log("Google 2");
-
-        if (result['status']['signed_in']) {
-          var request = gapi.client.plus.people.get({'userId': 'me'});
-          request.execute(function (resp) {
-            console.log('Google+ Login RESPONSE: ' + angular.toJson(resp));
-            var userEmail;
-            if (resp['emails']) {
-              for (var i = 0; i < resp['emails'].length; i++) {
-                if (resp['emails'][i]['type'] == 'account') {
-                  userEmail = resp['emails'][i]['value'];
-                }
-              }
-            }
-            // store data to DB
-            var user = {};
-            user.name = resp.displayName;
-            user.email = userEmail;
-            if (resp.gender) {
-              resp.gender.toString().toLowerCase() === 'male' ? user.gender = 'M' : user.gender = 'F';
-            } else {
-              user.gender = '';
-            }
-            user.profilePic = resp.image.url;
-            $cookieStore.put('userInfo', user);
-            $scope.modal.hide();
-            $window.location.reload();
-          });
-        }
-      }
-    };
-    // END Google Plus Login
-
 
 
   })
+
 
   .controller('SavingsCtrl', function ($http, $scope, $window, $timeout, $cookieStore) {
 
@@ -159,6 +108,7 @@ angular.module('starter.controllers', ['textAngular'])
       $scope.savings = data;
 
     });
+
 
     $scope.refresh = function () {
 
@@ -200,11 +150,17 @@ angular.module('starter.controllers', ['textAngular'])
     };
 
 
-
-
   })
 
   .controller('SavingCtrl', function ($stateParams, $scope, $http, $cookieStore) {
+
+    // $scope.savingUrl = function (saving) {
+    //
+    //   $scope.savingLink = 'http://saveme.ie/savings/' + $scope.saving._id;
+    //   // console.log($scope.savingLink);
+    //   return $scope.savingLink;
+    //
+    // };
 
     $scope.user = $cookieStore.get('userInfo');
 
@@ -238,6 +194,7 @@ angular.module('starter.controllers', ['textAngular'])
       $scope.saving = data;
       $scope.priceFormatted = '€' + $scope.saving.price;
       $scope.retailerFormatted = '@ (' + $scope.saving.retailer + ')';
+      $scope.savingLink = 'http://saveme.ie/savings/' + $scope.saving._id;
 
     });
 
@@ -273,6 +230,7 @@ angular.module('starter.controllers', ['textAngular'])
 
     };
 
+
   })
 
   .controller('CouponsCtrl', function ($scope) {
@@ -291,9 +249,8 @@ angular.module('starter.controllers', ['textAngular'])
 
   .controller('LoginCtrl', function ($scope, $state, $cookieStore, $http) {
 
-
-
-
-
   });
+
+
+
 

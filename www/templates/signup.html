@@ -1,0 +1,53 @@
+<ion-modal-view>
+  <ion-header-bar>
+    <h1 class="title">SignUp</h1>
+    <div class="buttons">
+      <button class="button button-clear" ng-click="closeSignup()">Close</button>
+    </div>
+  </ion-header-bar>
+  <ion-content>
+
+    <form ng-submit="doSignup()">
+      <div class="list">
+        <label class="item item-input">
+          <span class="input-label">FirstName</span>
+          <input type="text" ng-model="signupData.signupFirstName">
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Surname</span>
+          <input type="text" ng-model="signupData.signupSurname">
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Email</span>
+          <input type="text" ng-model="signupData.signupEmail">
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Username</span>
+          <input type="text" ng-model="signupData.signupUsername">
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Password</span>
+          <input type="password" ng-model="signupData.signupPassword">
+        </label>
+        <label class="item item-input">
+          <span class="input-label"> Confirm Password</span>
+          <input type="password" ng-model="signupData.signupPassword2">
+        </label>
+        <label class="item">
+          <button class="button button-block button-positive" type="submit">Sign Up</button>
+        </label>
+      </div>
+    </form>
+    <div class="login-btns">
+      <div id="social-links">
+        <ul>
+          <li ng-hide="user.name" ng-click="fbLogin()"><span class="ifacebook"><img src="img/social-icons/facebook.png"></span><a
+            href="#" class="afacebook">sign up with facebook</a></li>
+          <li ng-hide="user.name" ng-click="googleLogin()"><span class="igoogleplus"><img
+            src="img/social-icons/googleplus.png"></span><a href="#" class="agoogleplus">sign up with google+</a></li>
+        </ul>
+      </div>
+
+    </div>
+  </ion-content>
+</ion-modal-view>

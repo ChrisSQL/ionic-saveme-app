@@ -6,15 +6,33 @@
     </div>
   </ion-header-bar>
   <ion-content>
-    <div  class="logo-welcome"></div>
+
+    <form ng-submit="doLogin()">
+      <div class="list">
+        <label class="item item-input">
+          <span class="input-label">Username</span>
+          <input type="text" ng-model="loginData.username">
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Password</span>
+          <input type="password" ng-model="loginData.password">
+        </label>
+        <label class="item">
+          <button class="button button-block button-positive" type="submit">Log in</button>
+        </label>
+      </div>
+    </form>
     <div class="login-btns">
       <div id="social-links">
         <ul>
-          <li ng-hide="user.name" ng-click="fbLogin()"><span class="ifacebook"><img src="img/social-icons/facebook.png"></span><a href="#" class="afacebook">sign in with facebook</a></li>
-          <li ng-hide="user.name" ng-click="googleLogin()"><span class="igoogleplus"><img src="img/social-icons/googleplus.png"></span><a href="#" class="agoogleplus">sign in with google+</a></li>
+          <li ng-hide="user.name" ng-click="fbLogin()"><span class="ifacebook"><img src="img/social-icons/facebook.png"></span><a
+            href="#" class="afacebook">sign in with facebook</a></li>
+          <li ng-hide="user.name" ng-click="googleLogin()"><span class="igoogleplus"><img
+            src="img/social-icons/googleplus.png"></span><a href="#" class="agoogleplus">sign in with google+</a></li>
+          <li ng-hide="user.name" ng-click="signup()"><button class="button button-clear" ng-click="signup()">Sign Up</button></li>
         </ul>
       </div>
-      <hr id="login-divider" />
+
     </div>
   </ion-content>
 </ion-modal-view>

@@ -5,13 +5,13 @@
       <ion-nav-back-button>
       </ion-nav-back-button>
 
-      <!--<ion-nav-buttons side="left">-->
-        <!--<button ng-hide="user.name" ng-click="login()" class="button button-icon button-clear ion-navicon" menu-toggle="left">-->
-        <!--</button>-->
-      <!--</ion-nav-buttons>-->
+      <ion-nav-buttons side="left">
+        <button ng-hide="storage.profilePic" ng-click="login()" class="button button-icon button-clear ion-navicon" menu-toggle="left">
+        </button>
+      </ion-nav-buttons>
 
       <ion-nav-buttons side="right">
-        <div ng-show="user.name"  ng-click="logout()"  class="profile-pic" ng-style="{'background-image': 'url(' + user.profilePic + ')'}"></div>
+        <div ng-show="storage.profilePic"  ng-click="logout()"  class="profile-pic" ng-style="{'background-image': 'url(' + storage.profilePic + ')'}"></div>
       </ion-nav-buttons>
 
 

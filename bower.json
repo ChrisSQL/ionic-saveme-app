@@ -11,6 +11,7 @@
     "angular-cookies": "^1.5.0",
     "Ionicons": "ionicons#^2.0.1",
     "angular-spinner": "^0.8.1",
-    "angulike": "^1.2.0"
+    "angulike": "^1.2.0",
+    "ngstorage": "^0.3.10"
   }
 }

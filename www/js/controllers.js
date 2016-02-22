@@ -11,6 +11,7 @@ angular.module('starter.controllers', ['textAngular'])
 
     $scope.storage = $localStorage;
 
+
     $scope.user = $cookieStore.get('userInfo');
 
     // Form data for the login modal
@@ -99,7 +100,7 @@ angular.module('starter.controllers', ['textAngular'])
           }).error(function (data, status, header, config) {
 
             $ionicPopup.alert({
-              title: 'Login Incorrect'
+              title: 'Login Failed.'
             });
 
           });
@@ -262,7 +263,7 @@ angular.module('starter.controllers', ['textAngular'])
 
   })
 
-  .controller('SavingCtrl', function ($stateParams, $scope, $http, $cookieStore) {
+  .controller('SavingCtrl', function ($stateParams, $scope, $http, $cookieStore, $timeout) {
 
     // $scope.savingUrl = function (saving) {
     //
@@ -271,6 +272,9 @@ angular.module('starter.controllers', ['textAngular'])
     //   return $scope.savingLink;
     //
     // };
+
+    // $scope.votedCold = true;
+    // $scope.votedHot = true;
 
     $scope.user = $cookieStore.get('userInfo');
 
@@ -306,6 +310,34 @@ angular.module('starter.controllers', ['textAngular'])
       $scope.retailerFormatted = '@ (' + $scope.saving.retailer + ')';
       $scope.savingLink = 'http://saveme.ie/savings/' + $scope.saving._id;
 
+      var hasVoted = $scope.saving.downVoters.filter(function (voter) {
+
+          return voter === $scope.storage.email;
+
+        }).length > 0;
+
+
+      if(hasVoted){
+
+        $scope.votedCold = true;
+        $scope.votedHot = false;
+
+      }
+
+      var hasVoted2 = $scope.saving.upVoters.filter(function (voter) {
+
+          return voter === $scope.storage.email;
+
+        }).length > 0;
+
+
+      if(hasVoted2){
+
+        $scope.votedCold = false;
+        $scope.votedHot = true;
+
+      }
+
     });
 
     $http.get('http://www.saveme.ie/posts').success(function (data) {
@@ -336,6 +368,48 @@ angular.module('starter.controllers', ['textAngular'])
         return $scope.saving.urlimage;
 
       }
+
+
+    };
+
+    $scope.voteDown = function(saving){
+
+
+        $scope.data = {};
+
+        $timeout(function () {
+
+          $http.put("http://www.saveme.ie/api/savings/app/downvote/" + $scope.saving._id + "/" + $scope.storage.email, $scope.data).success(function(data1, status) {
+
+            $scope.hello = data1;
+
+            $scope.votedCold = true;
+            $scope.votedHot = false;
+
+          })
+
+        }, 1);
+
+
+
+    };
+
+    $scope.voteUp = function(saving){
+
+      $scope.data = {};
+
+      $timeout(function () {
+
+        $http.put("http://www.saveme.ie/api/savings/app/upvote/" + $scope.saving._id + "/" + $scope.storage.email, $scope.data).success(function(data1, status) {
+
+          $scope.hello = data1;
+
+          $scope.votedCold = false;
+          $scope.votedHot = true;
+
+        })
+
+      }, 1);
 
 
     };

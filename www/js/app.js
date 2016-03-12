@@ -4,9 +4,10 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('saveme', ['ngCookies', 'ionic', 'starter.controllers', 'angulike', 'services', 'ngStorage'])
+angular.module('saveme', ['ngCookies', 'ionic', 'starter.controllers', 'angulike', 'services', 'ngStorage', 'ngCordova'])
 
-.run(function($ionicPlatform, $rootScope, $cookieStore, $state, $localStorage, $sessionStorage) {
+.run(function($ionicPlatform, $rootScope, $cookieStore, $state, $localStorage, $sessionStorage, $window) {
+
 
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -21,6 +22,7 @@ angular.module('saveme', ['ngCookies', 'ionic', 'starter.controllers', 'angulike
       StatusBar.styleDefault();
     }
   });
+
 
 
 })
@@ -52,6 +54,17 @@ angular.module('saveme', ['ngCookies', 'ionic', 'starter.controllers', 'angulike
         'menuContent': {
           templateUrl: 'templates/signup.html',
           controller: 'SignupCtrl'
+        }
+
+      }
+    })
+
+    .state('app.profile', {
+      url: '/profile',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/profile.html',
+          controller: 'ProfileCtrl'
         }
 
       }

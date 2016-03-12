@@ -1,18 +1,25 @@
 <ion-view view-title="">
-  <ion-content>
+  <ion-content  class="profile-content">
 
     <div class="outer-container-saving">
 
       <div class="list card">
 
         <div class="row top-row">
-          <img ng-src="{{saving.user.profileImageURL}}" class="small-profile-image-thumbnail-top"
+          <img ng-src="{{userImage(saving)}}" class="small-profile-image-thumbnail-top"
                alt="{{saving.user.username}}"/>
           <div class="username-top" data-ng-bind="saving.user.username"></div>
           <div class="username-date-top">{{saving.created | date : format}}</div>
         </div>
 
+
+
         <div class="item item-body">
+
+          <div class="row saving-votes-row">
+            <button ng-class="buttonColour(saving.votes)" class='button small-button-home-votes saving-votes-button'>{{saving.votes}}</button>
+          </div>
+
           <img class="full-image" ng-src="{{productImage(saving)}}">
 
           <!--<div class="product-view-title"> {{saving.title}} <div class="saving-price"> €{{saving.price}}</div> @ ({{saving.retailer}})-->
@@ -45,22 +52,22 @@
         </div>
 
 
-        <div class="row item" ng-show="user.provider === 'facebook'">
+        <!--<div class="row item" ng-show="user.provider === 'facebook'">-->
 
-          <div class="col text-center">
-            <div class="col text-center">
-              <div class="saving-price-saving">{{saving.votes}} Votes</div>
-            </div>
-          </div>
+          <!--<div class="col text-center">-->
+            <!--<div class="col text-center">-->
+              <!--<div class="saving-price-saving">{{saving.votes}} Votes</div>-->
+            <!--</div>-->
+          <!--</div>-->
 
-          <div class="col text-center">
-            <div class="col text-center" >
-              <div fb-like="savingLink"></div>
-            </div>
+          <!--<div class="col text-center">-->
+            <!--<div class="col text-center" >-->
+              <!--<div fb-like="savingLink"></div>-->
+            <!--</div>-->
 
-          </div>
+          <!--</div>-->
 
-        </div>
+        <!--</div>-->
 
 
         <div class="row item" ng-cloak>

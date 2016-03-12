@@ -1,0 +1,215 @@
+<ion-modal-view>
+  <ion-header-bar>
+    <h1 ng-bind="storage.username" class="title"></h1>
+    <div class="buttons">
+      <button class="button button-clear" ng-click="closeProfile()">Close</button>
+    </div>
+    <div class="buttons">
+      <button class="button button-clear" ng-click="logout()">Logout</button>
+    </div>
+  </ion-header-bar>
+  <ion-content ng-cloak class="profile-content">
+
+    <ion-refresher
+      pulling-text="Pull to refresh"
+      on-refresh="refreshProfile()"
+      refreshing-text="Refreshing!">
+    </ion-refresher>
+
+    <!-- Profile Box Here -->
+
+    <div class="savings-list">
+      <div class="row group-item-profile">
+
+        <div class="col">
+          <div ng-show="storage.profilePic" class="profile-pic-profile"
+               ng-style="{'background-image': 'url(' + storage.profilePic + ')'}"></div>
+        </div>
+
+
+        <div class="col profile-text">
+
+          <div class="row text-center">
+            <div class="col"><b>Member Since : </b></div>
+          </div>
+          <div class="row text-center">
+            <div class="col">{{storage.created.toUpperCase() | date : format}}</div>
+          </div>
+          <div class="row text-center">
+            <div class="col"><b>Votes : {{totalUpvotes}} <span class="ion-android-arrow-up" aria-hidden="true"></span> -
+              {{totalDownvotes}} <span class="ion-android-arrow-down" aria-hidden="true"></span></b></div>
+          </div>
+          <div class="row text-center">
+            <div class="col"><b>Savings Posted : {{savingsCountTotal}}</b></div>
+          </div>
+          <div class="row text-center">
+            <div class="col"><b>Location : </b>{{storage.county.toUpperCase()}}</div>
+          </div>
+
+
+        </div>
+
+      </div>
+    </div>
+
+
+    <ion-list>
+
+      <ion-item href="#/app/savings/{{saving._id}}" ng-click="closeProfile()"
+                ng-repeat="saving in savingsProfile| filter:{user: {_id: storage._id}} |orderBy:'votesreal' "
+                class="savings-list">
+
+        <div class="row group-item">
+
+          <div class="col-75 title-70">
+
+            <div class="row"><h3 class="title-top votes">{{saving.votes}} </h3></div>
+
+
+            <div class="row"><h2 class="title-text">{{saving.title}} <b>€{{saving.price}}</b> @ ({{saving.retailer}})
+            </h2></div>
+
+
+          </div>
+          <div class="col-25 image-30">
+
+            <div class="saving-image-box">
+              <img class="list-image thumbnail" ng-src="{{productImage(saving)}}">
+            </div>
+
+
+            <!--<div class="row">-->
+            <!--&lt;!&ndash;<div class="col save-button">&ndash;&gt;-->
+            <!--&lt;!&ndash;<a class=" text-center" href="#/app/savings/{{saving._id}}">&ndash;&gt;-->
+            <!--&lt;!&ndash;<button class="save-button">SAVE</button>&ndash;&gt;-->
+            <!--&lt;!&ndash;</a>&ndash;&gt;-->
+            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+            <div class="save-button-area text-center">
+              <button class='button button-positive small-button-home'>SAVE</button>
+            </div>
+
+            <!--&lt;!&ndash;</a>&ndash;&gt;-->
+            <!--</div>-->
+
+
+          </div>
+
+
+        </div>
+        <div class="row bottom-row">
+
+
+          <img ng-src="{{storage.profilePic}}"
+               class="small-profile-image-thumbnail"
+               alt="{{saving.user.username}}"/>
+
+
+          <div class="username" data-ng-bind="saving.user.username"></div>
+          <div class="username-date">{{saving.created | date : format}}</div>
+
+
+        </div>
+
+
+      </ion-item>
+
+    </ion-list>
+
+
+
+
+
+
+  </ion-content>
+</ion-modal-view>
+
+
+<!--000000000000000000-->
+
+
+<!--<ion-view>-->
+
+<!--<ion-content ng-cloak>-->
+
+<!--<ion-refresher-->
+<!--pulling-text="Pull to refresh"-->
+<!--on-refresh="refreshProfile()"-->
+<!--refreshing-text="Refreshing!">-->
+<!--</ion-refresher>-->
+
+<!--&lt;!&ndash; Profile Box Here &ndash;&gt;-->
+
+<!--<div class="savings-list">-->
+<!--<div class="row group-item">-->
+
+<!--AAA-->
+
+<!--</div>-->
+<!--</div>-->
+
+
+<!--<ion-list>-->
+
+<!--<ion-item href="#/app/savings/{{saving._id}}" ng-repeat="saving in savingsProfile track by $index |orderBy:'votesreal'" class="savings-list">-->
+
+<!--<div class="row group-item">-->
+
+<!--<div class="col-75 title-70">-->
+
+<!--<div class="row"><h3 class="title-top votes">{{saving.votes}} </h3></div>-->
+
+
+<!--<div class="row"><h2 class="title-text">{{saving.title}} <b>€{{saving.price}}</b> @ ({{saving.retailer}})-->
+<!--</h2></div>-->
+
+
+<!--</div>-->
+<!--<div class="col-25 image-30">-->
+
+<!--<div class="saving-image-box">-->
+<!--<img class="list-image thumbnail" ng-src="{{productImage(saving)}}">-->
+<!--</div>-->
+
+
+<!--&lt;!&ndash;<div class="row">&ndash;&gt;-->
+<!--&lt;!&ndash;&lt;!&ndash;<div class="col save-button">&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;&lt;!&ndash;<a class=" text-center" href="#/app/savings/{{saving._id}}">&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;&lt;!&ndash;<button class="save-button">SAVE</button>&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;&lt;!&ndash;</a>&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+
+<!--<div class="save-button-area text-center">-->
+<!--<button class='button button-positive small-button-home'>SAVE</button>-->
+<!--</div>-->
+
+<!--&lt;!&ndash;&lt;!&ndash;</a>&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+
+<!--</div>-->
+
+
+<!--</div>-->
+<!--<div class="row bottom-row">-->
+
+
+<!--<img ng-src="{{saving.user.profileImageURL}}"-->
+<!--class="small-profile-image-thumbnail"-->
+<!--alt="{{saving.user.username}}"/>-->
+
+<!--<div class="username" data-ng-bind="saving.user.username"></div>-->
+<!--<div class="username-date">{{saving.created | date : format}}</div>-->
+
+
+<!--</div>-->
+
+
+<!--</ion-item>-->
+
+<!--</ion-list>-->
+
+
+<!--</ion-content>-->
+<!--</ion-view>-->
+

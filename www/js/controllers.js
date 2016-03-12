@@ -2,6 +2,22 @@ angular.module('starter.controllers', ['textAngular'])
 
   .controller('AppCtrl', function ($http, $scope, $ionicModal, $timeout, $stateParams, $state, $cookieStore, $window, $ionicPopup, $localStorage, $sessionStorage) {
 
+
+    $scope.buttonColour = function (votes) {
+      if (votes < 0)
+        return "blue";
+      else if (votes >= 1 && votes <= 25)
+        return "grey";
+      else if (votes >= 26 && votes <= 50)
+        return "yellow";
+      else if (votes >= 51 && votes <= 99)
+        return "orange";
+      else if (votes >=100)
+        return "red";
+
+
+    };
+
     // Logout user
     $scope.logout = function () {
       $scope.storage.$reset();
@@ -32,6 +48,13 @@ angular.module('starter.controllers', ['textAngular'])
       $scope.modalsignup = modal;
     });
 
+    // Create the signup modal that we will use later
+    $ionicModal.fromTemplateUrl('templates/profile.html', {
+      scope: $scope
+    }).then(function (modal) {
+      $scope.modalprofile = modal;
+    });
+
     // Triggered in the login modal to close it
     $scope.closeLogin = function () {
       $scope.modal.hide();
@@ -42,21 +65,49 @@ angular.module('starter.controllers', ['textAngular'])
       $scope.modalsignup.hide();
     };
 
+    // Triggered in the login modal to close it
+    $scope.closeProfile = function () {
+
+      $timeout(function () {
+        $scope.modalprofile.hide();
+      }, 500);
+    };
+
     // Open the login modal
     $scope.login = function () {
-      $scope.modal.show();
+
+      $scope.modalsignup.hide();
+      $scope.modalprofile.hide();
+
+      $timeout(function () {
+        $scope.modal.show();
+      }, 500);
+
+
+    };
+
+    // Open the login modal
+    $scope.profile = function () {
+
+
+      $scope.modalsignup.hide();
+      $scope.modal.hide();
+
+      $timeout(function () {
+        $scope.modalprofile.show();
+      }, 500);
+
     };
 
     // Open the signup modal
     $scope.signup = function () {
 
+      $scope.modalprofile.hide();
       $scope.modal.hide();
 
       $timeout(function () {
         $scope.modalsignup.show();
       }, 500);
-
-
 
 
     };
@@ -74,36 +125,41 @@ angular.module('starter.controllers', ['textAngular'])
       // http://www.saveme.ie/api/auth/signin
 
 
-
       $timeout(function () {
 
-          $http.post("http://www.saveme.ie/api/auth/signin", $scope.data).success(function(data1, status) {
-            $scope.hello = data1;
+        $http.post("http://www.saveme.ie/api/auth/signin", $scope.data).success(function (data1, status) {
+          $scope.hello = data1;
 
-            $scope.storage.username = $scope.hello.username;
-            $scope.storage.email = $scope.hello.email;
-            $scope.storage.provider = 'local';
-            $scope.storage.gender = $scope.hello.gender;
-            $scope.storage._id = $scope.hello._id;
-            $scope.storage.profilePic = $scope.hello.profileImageURL;
+          console.log($scope.hello);
 
-            if($scope.hello.profileImageURL.substring(0, 3) === 'mod'){
-              $scope.storage.profilePic = 'http://www.saveme.ie/' + $scope.hello.profileImageURL;
-            }else if($scope.hello.profileImageURL.substring(0, 6) === '../mod'){
-              $scope.storage.profilePic = 'http://www.saveme.ie/' + $scope.storage.profilePic.substring(3);
-            }
+          $scope.storage.username = $scope.hello.username;
+          $scope.storage.email = $scope.hello.email;
+          $scope.storage.provider = 'local';
+          $scope.storage.gender = $scope.hello.gender;
+          $scope.storage._id = $scope.hello._id;
+          $scope.storage.profilePic = $scope.hello.profileImageURL;
+          $scope.storage.created = $scope.hello.created;
+          $scope.storage.county = $scope.hello.county;
 
-            $scope.modal.hide();
-            $scope.modalsignup.hide();
-            // $window.location.reload();
+          $scope.storage.aboutme = $scope.hello.aboutme;
 
-          }).error(function (data, status, header, config) {
+          if ($scope.hello.profileImageURL.substring(0, 3) === 'mod') {
+            $scope.storage.profilePic = 'http://www.saveme.ie/' + $scope.hello.profileImageURL;
+          } else if ($scope.hello.profileImageURL.substring(0, 6) === '../mod') {
+            $scope.storage.profilePic = 'http://www.saveme.ie/' + $scope.storage.profilePic.substring(3);
+          }
 
-            $ionicPopup.alert({
-              title: 'Login Failed.'
-            });
+          $scope.modal.hide();
+          $scope.modalsignup.hide();
+          // $window.location.reload();
 
+        }).error(function (data, status, header, config) {
+
+          $ionicPopup.alert({
+            title: 'Login Failed.'
           });
+
+        });
 
       }, 1000);
     };
@@ -125,21 +181,19 @@ angular.module('starter.controllers', ['textAngular'])
       // http://www.saveme.ie/api/auth/signin
 
 
-
       $timeout(function () {
 
-        $http.post("http://www.saveme.ie/api/auth/signup", $scope.data).success(function(data1, status) {
+        $http.post("http://www.saveme.ie/api/auth/signup", $scope.data).success(function (data1, status) {
           $scope.hello = data1;
 
           $scope.loginData.username = $scope.hello.username;
           $scope.loginData.password = $scope.signupData.signupPassword;
 
 
-
           $scope.doLogin();
 
           $timeout(function () {
-          $scope.modalsignup.hide();
+            $scope.modalsignup.hide();
           }, 1000);
 
         }).error(function (data, status, header, config) {
@@ -198,8 +252,75 @@ angular.module('starter.controllers', ['textAngular'])
     };
     // END FB Login
 
+    $http.get('http://www.saveme.ie/api/savings').success(function (dataProfile) {
+      $scope.savingsProfile = dataProfile;
+
+      $scope.savingsCountTotal = 0;
+      for (i = 0; i < $scope.savingsProfile.length; i++) {
+        
+        if ($scope.savingsProfile[i].user._id === $scope.storage._id) {
+
+          $scope.savingsCountTotal++;
+        }
+      }
+
+    });
+    $http.get('http://www.saveme.ie/savings/usersSavingsPostedTotal/' + $scope.storage._id).success(function (dataProfile) {
+      $scope.savingsByUser = dataProfile;
+      $scope.totalUpvotes = 0;
+      $scope.totalDownvotes = 0;
+
+      for (var i = 0; i < $scope.savingsByUser.length; i++) {
+
+        $scope.totalUpvotes = $scope.totalUpvotes + $scope.savingsByUser[i].upVoters.length;
+      }
+
+      for (var x = 0; x < $scope.savingsByUser.length; x++) {
+
+        $scope.totalDownvotes = $scope.totalDownvotes + $scope.savingsByUser[x].downVoters.length;
+      }
+    });
+
+    $scope.refreshProfile = function () {
+
+      $http.get('http://www.saveme.ie/api/savings').success(function (dataProfile) {
+        $scope.savingsProfile = dataProfile;
+        $scope.idFilter = $scope.storage._id;
 
 
+      });
+
+      $timeout(function () {
+
+        //Stop the ion-refresher from spinning
+        $scope.$broadcast('scroll.refreshComplete');
+
+      }, 1000);
+    };
+
+    $scope.productImage = function (saving) {
+
+      var savingURL = saving.urlimage.charAt(0);
+      // console.log(savingURL);
+
+      if (savingURL === '.') {
+
+        while (saving.urlimage.charAt(0) === '0')
+          saving.urlimage = saving.urlimage.substr(1);
+
+        // console.log('http://www.saveme.ie/'+ saving.urlimage);
+
+        return 'http://www.saveme.ie/' + saving.urlimage;
+
+
+      } else {
+
+        return saving.urlimage;
+
+      }
+
+
+    };
   })
 
 
@@ -260,6 +381,42 @@ angular.module('starter.controllers', ['textAngular'])
 
     };
 
+    $scope.userImage = function (saving) {
+
+      if(saving.user.profileImageURL !== undefined){
+        var userImageURL = saving.user.profileImageURL.charAt(0);
+
+        if (userImageURL === '.') {
+
+          var cut = saving.user.profileImageURL.substring(3);
+
+          console.log('http://www.saveme.ie/' + cut);
+          return 'http://www.saveme.ie/' + cut;
+
+          // while (saving.user.profileImageURL.charAt(0) === '0')
+          //   saving.user.profileImageURL = saving.user.profileImageURL.substr(1);
+          //
+          // // console.log('http://www.saveme.ie/'+ saving.urlimage);
+          //
+          // return 'http://www.saveme.ie/' + saving.user.profileImageURL;
+
+
+        } else {
+
+          return saving.user.profileImageURL;
+
+        }
+      }
+
+
+
+
+    };
+
+
+
+
+
 
   })
 
@@ -275,6 +432,38 @@ angular.module('starter.controllers', ['textAngular'])
 
     // $scope.votedCold = true;
     // $scope.votedHot = true;
+
+    $scope.userImage = function (saving) {
+
+      if(saving.user.profileImageURL !== undefined){
+        var userImageURL = saving.user.profileImageURL.charAt(0);
+
+        if (userImageURL === '.') {
+
+          var cut = saving.user.profileImageURL.substring(3);
+
+          console.log('http://www.saveme.ie/' + cut);
+          return 'http://www.saveme.ie/' + cut;
+
+          // while (saving.user.profileImageURL.charAt(0) === '0')
+          //   saving.user.profileImageURL = saving.user.profileImageURL.substr(1);
+          //
+          // // console.log('http://www.saveme.ie/'+ saving.urlimage);
+          //
+          // return 'http://www.saveme.ie/' + saving.user.profileImageURL;
+
+
+        } else {
+
+          return saving.user.profileImageURL;
+
+        }
+      }
+
+
+
+
+    };
 
     $scope.user = $cookieStore.get('userInfo');
 
@@ -317,7 +506,7 @@ angular.module('starter.controllers', ['textAngular'])
         }).length > 0;
 
 
-      if(hasVoted){
+      if (hasVoted) {
 
         $scope.votedCold = true;
         $scope.votedHot = false;
@@ -331,7 +520,7 @@ angular.module('starter.controllers', ['textAngular'])
         }).length > 0;
 
 
-      if(hasVoted2){
+      if (hasVoted2) {
 
         $scope.votedCold = false;
         $scope.votedHot = true;
@@ -372,35 +561,34 @@ angular.module('starter.controllers', ['textAngular'])
 
     };
 
-    $scope.voteDown = function(saving){
+    $scope.voteDown = function (saving) {
 
-
-        $scope.data = {};
-
-        $timeout(function () {
-
-          $http.put("http://www.saveme.ie/api/savings/app/downvote/" + $scope.saving._id + "/" + $scope.storage.email, $scope.data).success(function(data1, status) {
-
-            $scope.hello = data1;
-
-            $scope.votedCold = true;
-            $scope.votedHot = false;
-
-          })
-
-        }, 1);
-
-
-
-    };
-
-    $scope.voteUp = function(saving){
 
       $scope.data = {};
 
       $timeout(function () {
 
-        $http.put("http://www.saveme.ie/api/savings/app/upvote/" + $scope.saving._id + "/" + $scope.storage.email, $scope.data).success(function(data1, status) {
+        $http.put("http://www.saveme.ie/api/savings/app/downvote/" + $scope.saving._id + "/" + $scope.storage.email, $scope.data).success(function (data1, status) {
+
+          $scope.hello = data1;
+
+          $scope.votedCold = true;
+          $scope.votedHot = false;
+
+        })
+
+      }, 1);
+
+
+    };
+
+    $scope.voteUp = function (saving) {
+
+      $scope.data = {};
+
+      $timeout(function () {
+
+        $http.put("http://www.saveme.ie/api/savings/app/upvote/" + $scope.saving._id + "/" + $scope.storage.email, $scope.data).success(function (data1, status) {
 
           $scope.hello = data1;
 
@@ -435,9 +623,14 @@ angular.module('starter.controllers', ['textAngular'])
 
   })
 
-.controller('SignupCtrl', function ($scope, $state, $cookieStore, $http) {
+  .controller('SignupCtrl', function ($scope, $state, $cookieStore, $http) {
 
-});
+  })
+
+  .controller('ProfileCtrl', function ($scope, $state, $http) {
+
+
+  });
 
 
 

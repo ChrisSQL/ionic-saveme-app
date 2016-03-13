@@ -374,6 +374,8 @@ hr {
 
 .outer-container-saving{
 
+  margin-top: -18px;
+
   padding-top: 1px;
   background-color: #EEEEEE;
   padding-bottom: 1px;
@@ -752,6 +754,8 @@ textarea{
   font-size: 150%;
   margin-top: 20px;
   margin-bottom: 20px;
+  line-height: 120%;
+
 
 }
 

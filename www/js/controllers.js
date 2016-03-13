@@ -257,7 +257,7 @@ angular.module('starter.controllers', ['textAngular'])
 
       $scope.savingsCountTotal = 0;
       for (i = 0; i < $scope.savingsProfile.length; i++) {
-        
+
         if ($scope.savingsProfile[i].user._id === $scope.storage._id) {
 
           $scope.savingsCountTotal++;
@@ -383,25 +383,30 @@ angular.module('starter.controllers', ['textAngular'])
 
     $scope.userImage = function (saving) {
 
+      var cut = '';
+      var userImageURL = '';
+
+
       if(saving.user.profileImageURL !== undefined){
-        var userImageURL = saving.user.profileImageURL.charAt(0);
+
+        userImageURL = saving.user.profileImageURL.charAt(0);
+
 
         if (userImageURL === '.') {
 
-          var cut = saving.user.profileImageURL.substring(3);
+          cut  = saving.user.profileImageURL.substring(3);
 
           console.log('http://www.saveme.ie/' + cut);
           return 'http://www.saveme.ie/' + cut;
 
-          // while (saving.user.profileImageURL.charAt(0) === '0')
-          //   saving.user.profileImageURL = saving.user.profileImageURL.substr(1);
-          //
-          // // console.log('http://www.saveme.ie/'+ saving.urlimage);
-          //
-          // return 'http://www.saveme.ie/' + saving.user.profileImageURL;
+
+        }else if(userImageURL === 'm'){
 
 
-        } else {
+          return 'http://www.saveme.ie/' + saving.user.profileImageURL;
+
+        }else{
+
 
           return saving.user.profileImageURL;
 
@@ -435,25 +440,33 @@ angular.module('starter.controllers', ['textAngular'])
 
     $scope.userImage = function (saving) {
 
+      var cut = '';
+      var userImageURL = '';
+
+      console.log("userImageURL " + userImageURL);
+
       if(saving.user.profileImageURL !== undefined){
-        var userImageURL = saving.user.profileImageURL.charAt(0);
+
+        userImageURL = saving.user.profileImageURL.charAt(0);
+
+        console.log("userImageURL " + userImageURL);
 
         if (userImageURL === '.') {
 
-          var cut = saving.user.profileImageURL.substring(3);
+         cut  = saving.user.profileImageURL.substring(3);
 
           console.log('http://www.saveme.ie/' + cut);
           return 'http://www.saveme.ie/' + cut;
 
-          // while (saving.user.profileImageURL.charAt(0) === '0')
-          //   saving.user.profileImageURL = saving.user.profileImageURL.substr(1);
-          //
-          // // console.log('http://www.saveme.ie/'+ saving.urlimage);
-          //
-          // return 'http://www.saveme.ie/' + saving.user.profileImageURL;
+        }else if(userImageURL === 'm'){
 
+          console.log("userImageURL " + userImageURL);
 
-        } else {
+          return 'http://www.saveme.ie/' + saving.user.profileImageURL;
+
+        }else{
+
+          console.log("userImageURL " + userImageURL);
 
           return saving.user.profileImageURL;
 

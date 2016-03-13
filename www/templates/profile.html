@@ -63,11 +63,13 @@
 
           <div class="col-75 title-70">
 
-            <div class="row"><h3 class="title-top votes">{{saving.votes}} </h3></div>
+            <div class="row">
+              <button ng-class="buttonColour(saving.votes)" class='button small-button-home-votes'>{{saving.votes}}</button>
+            </div>
 
 
-            <div class="row"><h2 class="title-text">{{saving.title}} <b>€{{saving.price}}</b> @ ({{saving.retailer}})
-            </h2></div>
+            <div class="row title-text"><div class="timeframe-row-item-3-text">{{saving.title}} (<span
+              class="bolder">&euro;{{saving.price.toFixed(2)}} @ {{saving.retailer}})</span></div></div>
 
 
           </div>

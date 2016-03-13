@@ -4,7 +4,7 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('saveme', ['ngCookies', 'ionic', 'starter.controllers', 'angulike', 'services', 'ngStorage', 'ngCordova'])
+angular.module('saveme', ['ngCookies', 'ionic', 'starter.controllers', 'angulike', 'services', 'ngStorage'])
 
 .run(function($ionicPlatform, $rootScope, $cookieStore, $state, $localStorage, $sessionStorage, $window) {
 
